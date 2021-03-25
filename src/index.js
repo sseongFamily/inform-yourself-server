@@ -11,6 +11,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+const userRouter = require('./routes/userRouter');
+// 각 분기에 대한 route 처리
+app.use('/user', userRouter);
+
 app.listen(4000, () => {
   console.log('server start on', 4000);
 });
