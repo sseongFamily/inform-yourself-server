@@ -11,6 +11,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+const userRouter = require('./routes/userRouter');
+
+app.use('/user', userRouter);
+
+app.get('/', (req, res) => {
+  res.send('Inform Yourself Server');
+});
+
 app.listen(4000, () => {
   console.log('server start on', 4000);
 });
