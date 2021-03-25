@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 const userModel = require('../models/userModel');
 
-module.exports = {
-  lgoin: async (req, res) => {
+const userModule = {
+  login: async (req, res) => {
     const { email, password } = req.body;
     try {
       const hasPw = await crypto
