@@ -85,8 +85,8 @@ const userModels = {
 
       const userStack = await conn.query(userStackSql);
 
-      newUserInfo[0].map((info) => {
-        userStack[0].map((stack) => {
+      newUserInfo[0].forEach((info) => {
+        userStack[0].forEach((stack) => {
           if (info.email === stack.email) {
             if (info.stack === undefined) {
               info.stack = [stack.interests_name];
@@ -98,12 +98,14 @@ const userModels = {
         });
       });
 
-      const hotUserInfo = newUserInfo[0].sort((a, b) => (a.like_count - b.like_count) * -1);
+      const newUser = [...newUserInfo[0]];
+      const hotUser = newUserInfo[0].sort((a, b) => (a.like_count - b.like_count) * -1);
 
       // TODO: [hotUserInfo, newUserInfo] 내보내기
-      return [{ newUser: newUserInfo[0], hotUser: hotUserInfo }];
+      return [{ newUser, hotUser }];
     } catch (err) {
       console.log(err);
+      return 'Fail';
     }
   },
 };
