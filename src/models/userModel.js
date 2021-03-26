@@ -1,4 +1,6 @@
+const { access } = require('fs');
 const connect = require('../database');
+const tokenF = require('../token');
 
 const userModels = {
   findUser: async (email) => {
@@ -41,7 +43,6 @@ const userModels = {
   },
 
   loginUser: async (args) => {
-    console.log(args);
     try {
       const conn = await connect();
       const loginSql = `
@@ -49,7 +50,9 @@ const userModels = {
       `;
       const loginReq = await conn.query(loginSql, [args.email, args.password]);
       if (loginReq[0].toString().length) {
-        return true;
+        const { email, user_name, phone_number } = JSON.parse(JSON.stringify(loginReq[0]))[0];
+        const accessToken = tokenF.createAccessToken({ email, user_name, phone_number });
+        return accessToken;
       }
       return false;
     } catch (err) {

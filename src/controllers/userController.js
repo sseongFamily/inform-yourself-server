@@ -22,7 +22,7 @@ const userModule = {
       if (!loginReq) {
         return res.status(409).json({ message: '비밀번호가 틀렸습니다.' });
       }
-      res.json({ message: '로그인 성공' });
+      res.json({ message: '로그인 성공', accessToken: loginReq });
     } catch (err) {
       console.log(err);
       res.send(err);
