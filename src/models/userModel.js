@@ -50,11 +50,37 @@ const userModels = {
       `;
       const loginReq = await conn.query(loginSql, [args.email, args.password]);
       if (loginReq[0].toString().length) {
-        const { email, user_name, phone_number } = JSON.parse(JSON.stringify(loginReq[0]))[0];
-        const accessToken = tokenF.createAccessToken({ email, user_name, phone_number });
+        const { email, user_name, phone_number, profile_image, birthday } = JSON.parse(
+          JSON.stringify(loginReq[0])
+        )[0];
+        const accessToken = tokenF.createAccessToken({
+          email,
+          user_name,
+          phone_number,
+          profile_image,
+          birthday,
+        });
         return accessToken;
       }
       return false;
+    } catch (err) {
+      return err;
+    }
+  },
+
+  userInfoCardandStack: async (email) => {
+    try {
+      const conn = await connect();
+      const getCardSql = `
+        SELECT * FROM info_cards where email = ?;
+      `;
+      const getStackSql = `
+      select i.interests_name from interests i
+      left join user_and_interests ui
+      ON i.interests_code = ui.interests_code where ui.email = ?;
+      `;
+      const result = await conn.query(getCardSql + getStackSql, [email, email]);
+      return result[0];
     } catch (err) {
       return err;
     }
