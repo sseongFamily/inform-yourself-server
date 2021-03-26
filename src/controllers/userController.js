@@ -46,7 +46,11 @@ const userModule = {
 
     // TODO: userModel로 정보를 넘긴다.
     const result = await userModel.generalSignUp(req.body);
-    res.send(result);
+    res.status(200).send(result);
+  },
+  list: async (req, res) => {
+    const result = await userModel.hotAndNewUerInfo();
+    res.status(200).send(result);
   },
 };
 module.exports = userModule;

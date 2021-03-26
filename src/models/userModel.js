@@ -59,6 +59,53 @@ const userModels = {
       return err;
     }
   },
+  hotAndNewUerInfo: async () => {
+    try {
+      const conn = await connect();
+      // TODO: newUser 정보 가져오기(stack추가 후 내보내기)
+      // TODO: newUser 정보에서 like_count 기준으로 정렬(stack추가 후 내보내기)
+      // newUser 정보 가져오기
+      const newUserInfoSql = `
+      SELECT u.email, u.user_name, u.profile_image, info.one_line_introduce, u.created_at,info.like_count
+      FROM users AS u
+      INNER JOIN info_cards AS info
+      ON u.email = info.email
+      ORDER BY created_at DESC;
+      `;
+      const newUserInfo = await conn.query(newUserInfoSql);
+
+      const userStackSql = `
+      SELECT u.email, i.interests_name
+      FROM users AS u
+      INNER JOIN user_and_interests AS uai
+      ON u.email = uai.email
+      INNER JOIN interests AS i
+      ON i.interests_code = uai.interests_code;
+      `;
+
+      const userStack = await conn.query(userStackSql);
+
+      newUserInfo[0].map((info) => {
+        userStack[0].map((stack) => {
+          if (info.email === stack.email) {
+            if (info.stack === undefined) {
+              info.stack = [stack.interests_name];
+            } else {
+              info.stack.push(stack.interests_name);
+            }
+          }
+          return info;
+        });
+      });
+
+      const hotUserInfo = newUserInfo[0].sort((a, b) => (a.like_count - b.like_count) * -1);
+
+      // TODO: [hotUserInfo, newUserInfo] 내보내기
+      return [{ newUser: newUserInfo[0], hotUser: hotUserInfo }];
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };
 
 module.exports = userModels;
