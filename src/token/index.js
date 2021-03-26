@@ -6,6 +6,10 @@ const tokenFunction = {
     const accessToken = jwt.sign(userInfo, ACCESS_SECRET, { expiresIn: '2 h' });
     return accessToken;
   },
+  verifyAccessToken: (accessToken) => {
+    const userInfo = jwt.verify(accessToken, ACCESS_SECRET);
+    return userInfo;
+  },
 };
 
 module.exports = tokenFunction;
