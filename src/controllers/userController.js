@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const userModel = require('../models/userModel');
+const tokenF = require('../token');
 
 const userModule = {
   login: async (req, res) => {
@@ -51,6 +52,24 @@ const userModule = {
   list: async (req, res) => {
     const result = await userModel.hotAndNewUerInfo();
     res.status(200).send(result);
+  },
+
+  info: async (req, res) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    try {
+      const userInfo = tokenF.verifyAccessToken(accessToken);
+      delete userInfo.iat;
+      delete userInfo.exp;
+      const userCard = await userModel.userInfoCardandStack(userInfo.email);
+      userCard[0][0].stack = [];
+      userCard[1].map((el) => userCard[0][0].stack.push(el.interests_name));
+      res.json({
+        userInfo,
+        userCard: userCard[0],
+      });
+    } catch (err) {
+      return err;
+    }
   },
 };
 module.exports = userModule;
