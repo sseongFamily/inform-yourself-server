@@ -1,6 +1,6 @@
 const crypto = require('crypto');
-const userModel = require('../models/userModel');
 const tokenF = require('../token');
+const userModel = require('../models/userModel');
 
 const userModule = {
   login: async (req, res) => {
