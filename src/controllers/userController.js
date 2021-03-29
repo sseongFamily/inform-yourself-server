@@ -21,7 +21,6 @@ const userModule = {
         return res.status(409).json({ message: '존재하지 않는 아이디 입니다.' });
       }
       const loginReq = await userModel.loginUser({ email: email, password: hasPw });
-      console.log(loginReq);
       if (!loginReq) {
         return res.status(409).json({ message: '비밀번호가 틀렸습니다.' });
       }
@@ -102,8 +101,8 @@ const userModule = {
       // TODO : userModel.js에 user_email 데이터를 전송
       await userModel.userInfoModify(modifyUserInfo);
 
-      res.send({message: 'Success'});
-      } catch (err) {
+      res.send({ message: 'Success' });
+    } catch (err) {
       res.send(err);
     }
   },

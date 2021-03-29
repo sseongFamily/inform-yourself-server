@@ -93,6 +93,52 @@ const infoCardModel = {
       return err;
     }
   },
+
+  modify: async (modifyInfo) => {
+    const conn = await connect();
+    try {
+      const modifySql = `
+        UPDATE info_cards SET 
+        title = ?,
+        one_line_introduce = ?, 
+        description = ?, 
+        blog_url =?, 
+        repository_url =? 
+        WHERE email = ?;
+      `;
+      await conn.query(modifySql, [
+        modifyInfo.title,
+        modifyInfo.oneLineIntroduce,
+        modifyInfo.description,
+        modifyInfo.blogUrl,
+        modifyInfo.repositoryUrl,
+        modifyInfo.email,
+      ]);
+      const resetInterests = `
+        DELETE from user_and_interests where email = ?
+      `;
+      await conn.query(resetInterests, modifyInfo.email);
+
+      await Promise.all(
+        modifyInfo.stack.map(async (el) => {
+          const getInterestCode = `SELECT interests_code from interests where lower(interests_name) = lower(?);`;
+          const insertUserInt = `
+            INSERT INTO user_and_interests(email, interests_code) values(?, ?);
+          `;
+          const result = await conn.query(getInterestCode, el);
+          if (result[0][0] === undefined) {
+            const insertSql = `INSERT INTO interests(interests_name) values (?);`;
+            const result = await conn.query(insertSql, el);
+            return await conn.query(insertUserInt, [modifyInfo.email, result[0].insertId]);
+          }
+          await conn.query(insertUserInt, [modifyInfo.email, result[0][0].interests_code]);
+        })
+      );
+    } catch (err) {
+      return err;
+    }
+  },
+
   removeCard: async (infoCardId) => {
     const conn = await connect();
 
