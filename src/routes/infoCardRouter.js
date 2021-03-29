@@ -7,6 +7,7 @@ router
   .post('/', infoCardcontroller.createCard)
   .get('/list', infoCardcontroller.totalList)
   .get('/', infoCardcontroller.detailList)
-  .put('/', infoCardcontroller.removeInfoCard);
+  .put('/', infoCardcontroller.removeInfoCard)
+  .put('/like', infoCardcontroller.clickLikeOrUnLike);
 
 module.exports = router;
