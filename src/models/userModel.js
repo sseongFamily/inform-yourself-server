@@ -53,13 +53,15 @@ const userModels = {
         const { email, user_name, phone_number, profile_image, birthday } = JSON.parse(
           JSON.stringify(loginReq[0])
         )[0];
+
         const accessToken = tokenF.createAccessToken({
           email,
-          user_name,
-          phone_number,
-          profile_image,
+          userName: user_name,
+          phoneNumber: phone_number,
+          profileImage: profile_image,
           birthday,
         });
+        console.log(accessToken);
         return accessToken;
       }
       return false;
@@ -130,6 +132,40 @@ const userModels = {
       const result = await conn.query(getCardSql + getStackSql, [email, email]);
       return result[0];
     } catch (err) {
+      return err;
+    }
+  },
+  userInfoModify: async (userInfo) => {
+    const { email, password, profileIamge, phoneNumber } = userInfo;
+
+    try {
+      const conn = await connect();
+
+      if (password === undefined) {
+        const modifyUserInfoSql = `
+        UPDATE users SET profile_image=?, phone_number=? WHERE email = ?
+      `;
+
+        const nonePassword = await conn.query(modifyUserInfoSql, [
+          profileIamge,
+          phoneNumber,
+          email,
+        ]);
+        return { nonePassword };
+      }
+      const modifyUserInfoSql = `
+        UPDATE users SET password=?, profile_image=?, phone_number=? WHERE email = ?
+      `;
+
+      const existPassword = await conn.query(modifyUserInfoSql, [
+        password,
+        profileIamge,
+        phoneNumber,
+        email,
+      ]);
+      return { existPassword };
+    } catch (err) {
+      console.log(err);
       return err;
     }
   },
