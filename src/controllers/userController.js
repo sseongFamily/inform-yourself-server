@@ -71,5 +71,16 @@ const userModule = {
       return err;
     }
   },
+
+  withdraw: async (req, res) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    try {
+      const { email } = tokenF.verifyAccessToken(accessToken);
+      await userModel.withdrawUser(email);
+      res.json({ message: '회원탈퇴 성공' });
+    } catch (err) {
+      res.send(err);
+    }
+  },
 };
 module.exports = userModule;

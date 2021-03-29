@@ -6,6 +6,7 @@ router
   .post('/signup', controllerModule.signup)
   .post('/login', controllerModule.login)
   .get('/list', controllerModule.list)
-  .get('/', controllerModule.info);
+  .get('/', controllerModule.info)
+  .put('/withdraw', controllerModule.withdraw);
 
 module.exports = router;

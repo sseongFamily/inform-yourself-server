@@ -46,7 +46,7 @@ const userModels = {
     try {
       const conn = await connect();
       const loginSql = `
-        SELECT * FROM users where email = ? and password = ?;
+        SELECT * FROM users where email = ? and password = ? and is_delete = 0;
       `;
       const loginReq = await conn.query(loginSql, [args.email, args.password]);
       if (loginReq[0].toString().length) {
@@ -129,6 +129,18 @@ const userModels = {
       `;
       const result = await conn.query(getCardSql + getStackSql, [email, email]);
       return result[0];
+    } catch (err) {
+      return err;
+    }
+  },
+
+  withdrawUser: async (email) => {
+    try {
+      const conn = await connect();
+      const withdrawSql = `
+        UPDATE users SET is_delete = 1  where email = ?;
+      `;
+      await conn.query(withdrawSql, email);
     } catch (err) {
       return err;
     }
