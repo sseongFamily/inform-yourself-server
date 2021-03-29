@@ -1,4 +1,3 @@
-const { access } = require('fs');
 const connect = require('../database');
 const tokenF = require('../token');
 
@@ -146,22 +145,13 @@ const userModels = {
         UPDATE users SET profile_image=?, phone_number=? WHERE email = ?
       `;
 
-        await conn.query(modifyUserInfoSql, [
-          profileIamge,
-          phoneNumber,
-          email,
-        ]);
+        await conn.query(modifyUserInfoSql, [profileIamge, phoneNumber, email]);
       }
       const modifyUserInfoSql = `
         UPDATE users SET password=?, profile_image=?, phone_number=? WHERE email = ?
       `;
 
-      await conn.query(modifyUserInfoSql, [
-        password,
-        profileIamge,
-        phoneNumber,
-        email,
-      ]);
+      await conn.query(modifyUserInfoSql, [password, profileIamge, phoneNumber, email]);
     } catch (err) {
       return err;
     }
