@@ -34,7 +34,15 @@ const infoCardModule = {
       res.send(list);
     } catch (err) {
       console.log(err);
-      return err;
+      return res.send(err);
+    }
+  },
+  removeInfoCard: async (req, res) => {
+    const { infoCardId } = req.body;
+    try {
+      await infoCardModel.removeCard(infoCardId);
+    } catch (err) {
+      return res.send(err);
     }
   },
 };
