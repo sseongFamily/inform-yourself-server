@@ -54,14 +54,16 @@ const infoCardModule = {
     } catch (err) {
       return err;
     }
+  },
+
   clickLikeOrUnLike: async (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
-    try{ 
+    try {
       const { email } = tokenF.verifyAccessToken(accessToken);
       req.body.email = email;
       const result = await infoCardModel.likeOrUnLike(req.body);
       res.send(result);
-    }catch(err){
+    } catch (err) {
       return err;
     }
   },
