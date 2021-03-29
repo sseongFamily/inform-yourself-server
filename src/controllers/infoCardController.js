@@ -32,7 +32,15 @@ const infoCardModule = {
       res.send(list);
     } catch (err) {
       console.log(err);
-      return err;
+      return res.send(err);
+    }
+  },
+  removeInfoCard: async (req, res) => {
+    const { infoCardId } = req.body;
+    try {
+      await infoCardModel.removeCard(infoCardId);
+    } catch (err) {
+      return res.send(err);
     }
   },
 
@@ -44,6 +52,16 @@ const infoCardModule = {
       await infoCardModel.modify(req.body);
       return res.json({ message: '정보수정 완료되었습니다.' });
     } catch (err) {
+      return err;
+    }
+  clickLikeOrUnLike: async (req, res) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    try{ 
+      const { email } = tokenF.verifyAccessToken(accessToken);
+      req.body.email = email;
+      const result = await infoCardModel.likeOrUnLike(req.body);
+      res.send(result);
+    }catch(err){
       return err;
     }
   },

@@ -138,6 +138,65 @@ const infoCardModel = {
       return err;
     }
   },
+
+  removeCard: async (infoCardId) => {
+    const conn = await connect();
+
+    try {
+      const removeCardSql = `
+      UPDATE info_cards SET is_delete = 1 WHERE info_cards_id = ?;
+      `;
+      await conn.query(removeCardSql, [infoCardId]);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  },
+  likeOrUnLike: async (args) => {
+    const conn = await connect();
+
+    try {
+      const findLikeOrUnLikeUserSql = `
+      SELECT * FROM users_like_info_cards WHERE email = ? AND info_cards_id = ?
+      `;
+      const checkLikeOrUnLike = await conn.query(findLikeOrUnLikeUserSql, [
+        args.email,
+        args.infoCardsId,
+      ]);
+
+      //? 만약 특정 유저가 특정 게시글에 대한 좋아요를 눌렀다면
+      if (checkLikeOrUnLike[0].length > 0) {
+        // TODO : users_like_info_cards 테이블에 값 삭제, 해당 게시글에 like_count를 감소
+        const removeLikeInfoSql = `
+        DELETE FROM users_like_info_cards WHERE email = ? AND info_cards_id = ?;
+        `;
+        await conn.query(removeLikeInfoSql, [args.email, args.infoCardsId]);
+
+        const decrementLikeCountSql = `
+        UPDATE info_cards SET like_count = like_count - 1 WHERE info_cards_id = ?;
+        `;
+        await conn.query(decrementLikeCountSql, args.infoCardsId);
+      } else {
+        //? : 특정 유저가 특정 게시글에 대한 좋아요를 누르지 않았다면
+        // TODO : users_like_info_cards 테이블에 값 추가, 해당 게시글에 like_count를 증가
+
+        const insertLikeInfoSql = `
+        INSERT INTO users_like_info_cards SET email = ?, info_cards_id = ?;
+        `;
+        await conn.query(insertLikeInfoSql, [args.email, args.infoCardsId]);
+
+        const incrementLikeCountSql = `
+        UPDATE info_cards SET like_count = like_count + 1 WHERE info_cards_id = ?;
+        `;
+        await conn.query(incrementLikeCountSql, args.infoCardsId);
+      }
+
+      return { message: 'Success' };
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  },
 };
 
 module.exports = infoCardModel;
