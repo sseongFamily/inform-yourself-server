@@ -135,7 +135,7 @@ const userModels = {
     }
   },
   userInfoModify: async (userInfo) => {
-    const { email, password, profileIamge, phoneNumber } = userInfo;
+    const { email, userName, password, profileIamge, phoneNumber } = userInfo;
 
     try {
       const conn = await connect();
@@ -152,6 +152,16 @@ const userModels = {
       `;
 
       await conn.query(modifyUserInfoSql, [password, profileIamge, phoneNumber, email]);
+
+      const accessToken = tokenF.createAccessToken({
+        email,
+        userName,
+        phoneNumber,
+        profileImage,
+        birthday,
+      });
+
+      return accessToken;
     } catch (err) {
       return err;
     }

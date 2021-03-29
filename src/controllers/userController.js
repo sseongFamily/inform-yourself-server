@@ -99,9 +99,9 @@ const userModule = {
       const modifyUserInfo = Object.assign(userInfo, req.body);
 
       // TODO : userModel.js에 user_email 데이터를 전송
-      await userModel.userInfoModify(modifyUserInfo);
+      const newAcessToken = await userModel.userInfoModify(modifyUserInfo);
 
-      res.send({ message: 'Success' });
+      res.send(newAcessToken);
     } catch (err) {
       res.send(err);
     }
