@@ -16,10 +16,12 @@ const userModule = {
         )
         .toString('hex');
       const emailCheck = await userModel.findUser(email);
+
       if (!emailCheck) {
         return res.status(409).json({ message: '존재하지 않는 아이디 입니다.' });
       }
       const loginReq = await userModel.loginUser({ email: email, password: hasPw });
+      console.log(loginReq);
       if (!loginReq) {
         return res.status(409).json({ message: '비밀번호가 틀렸습니다.' });
       }
@@ -69,6 +71,40 @@ const userModule = {
       });
     } catch (err) {
       return err;
+    }
+  },
+  modify: async (req, res) => {
+    // TODO : client로부터 accessToken을 받아 user_email을 조회
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const { password } = req.body;
+    try {
+      const userInfo = tokenF.verifyAccessToken(accessToken);
+
+      // TODO: password를 변경할 경우, 변경하지 않을 경우를 생각해야 했다.
+      if (password !== undefined) {
+        const hasPw = await crypto
+          .pbkdf2Sync(
+            password,
+            String(process.env.CRYPTO_SALT),
+            Number(process.env.CRYPTO_ITERATOR),
+            32,
+            String(process.env.CRYPTO_ALGORITHM)
+          )
+          .toString('hex');
+        req.body.password = hasPw;
+      }
+
+      delete userInfo.iat;
+      delete userInfo.exp;
+
+      const modifyUserInfo = Object.assign(userInfo, req.body);
+
+      // TODO : userModel.js에 user_email 데이터를 전송
+      await userModel.userInfoModify(modifyUserInfo);
+
+      res.send({message: 'Success'});
+      } catch (err) {
+      res.send(err);
     }
   },
 

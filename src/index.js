@@ -13,6 +13,7 @@ app.use(cookieParser());
 
 const userRouter = require('./routes/userRouter');
 const infoCardRouter = require('./routes/infoCardRouter');
+
 // 각 분기에 대한 route 처리
 app.use('/user', userRouter);
 app.use('/infocard', infoCardRouter);
