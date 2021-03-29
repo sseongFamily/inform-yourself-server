@@ -7,7 +7,7 @@ const infoCardModule = {
     try {
       const { email } = tokenF.verifyAccessToken(accessToken);
       req.body.email = email;
-      const result = await infoCardModles.create(req.body);
+      await infoCardModel.create(req.body);
       return res.json({ message: '성공적으로 등록되었습니다.' });
     } catch (err) {
       return res.send(err);
@@ -28,12 +28,22 @@ const infoCardModule = {
     try {
       // TODO: params로 넘어온 id의 값은 각 infoCard의 primary key
       const { id } = req.query;
-
       const list = await infoCardModel.infoCardDetailList(id);
-
       res.send(list);
     } catch (err) {
       console.log(err);
+      return err;
+    }
+  },
+
+  modifyCard: async (req, res) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    try {
+      const { email } = tokenF.verifyAccessToken(accessToken);
+      req.body.email = email;
+      await infoCardModel.modify(req.body);
+      return res.json({ message: '정보수정 완료되었습니다.' });
+    } catch (err) {
       return err;
     }
   },
