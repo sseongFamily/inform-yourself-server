@@ -1,7 +1,7 @@
 const connect = require('../database');
 
-const infoCardModels = {
-    create: async (cardInfo) => {
+const infoCardModel = {
+  create: async (cardInfo) => {
     try {
       // TODO : 카드에 정보 입력 해주기
       const conn = await connect();
@@ -37,10 +37,10 @@ const infoCardModels = {
       );
 
       return true;
-    }catch(err){
+    } catch (err) {
       return err;
-    },
-      
+    }
+  },
   infoCardTotalList: async () => {
     const conn = await connect();
     try {
@@ -66,7 +66,7 @@ const infoCardModels = {
       return err;
     }
   },
-    
+
   infoCardDetailList: async (id) => {
     const conn = await connect();
     try {
@@ -87,13 +87,12 @@ const infoCardModels = {
       for (let list of detailList[0]) {
         list.stack = list.stack.split(' ');
       }
-
       return detailList[0];
-      } catch (err) {
+    } catch (err) {
       console.log(err);
       return err;
     }
+  },
 };
 
-module.exports = infoCardModels;
-
+module.exports = infoCardModel;
