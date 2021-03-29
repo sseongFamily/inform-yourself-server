@@ -93,6 +93,19 @@ const infoCardModel = {
       return err;
     }
   },
+  removeCard: async (infoCardId) => {
+    const conn = await connect();
+
+    try {
+      const removeCardSql = `
+      UPDATE info_cards SET is_delete = 1 WHERE info_cards_id = ?;
+      `;
+      await conn.query(removeCardSql, [infoCardId]);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  },
 };
 
 module.exports = infoCardModel;
