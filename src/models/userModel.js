@@ -46,7 +46,7 @@ const userModels = {
     try {
       const conn = await connect();
       const loginSql = `
-        SELECT * FROM users where email = ? and password = ?;
+        SELECT * FROM users where email = ? and password = ? and is_delete = 0;
       `;
       const loginReq = await conn.query(loginSql, [args.email, args.password]);
       if (loginReq[0].toString().length) {
@@ -146,26 +146,35 @@ const userModels = {
         UPDATE users SET profile_image=?, phone_number=? WHERE email = ?
       `;
 
-        const nonePassword = await conn.query(modifyUserInfoSql, [
+        await conn.query(modifyUserInfoSql, [
           profileIamge,
           phoneNumber,
           email,
         ]);
-        return { nonePassword };
       }
       const modifyUserInfoSql = `
         UPDATE users SET password=?, profile_image=?, phone_number=? WHERE email = ?
       `;
 
-      const existPassword = await conn.query(modifyUserInfoSql, [
+      await conn.query(modifyUserInfoSql, [
         password,
         profileIamge,
         phoneNumber,
         email,
       ]);
-      return { existPassword };
     } catch (err) {
-      console.log(err);
+      return err;
+    }
+  },
+
+  withdrawUser: async (email) => {
+    try {
+      const conn = await connect();
+      const withdrawSql = `
+        UPDATE users SET is_delete = 1  where email = ?;
+      `;
+      await conn.query(withdrawSql, email);
+    } catch (err) {
       return err;
     }
   },

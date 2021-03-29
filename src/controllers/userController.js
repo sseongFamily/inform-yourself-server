@@ -102,7 +102,18 @@ const userModule = {
       // TODO : userModel.js에 user_email 데이터를 전송
       await userModel.userInfoModify(modifyUserInfo);
 
-      res.send('hi');
+      res.send({message: 'Success'});
+      } catch (err) {
+      res.send(err);
+    }
+  },
+
+  withdraw: async (req, res) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    try {
+      const { email } = tokenF.verifyAccessToken(accessToken);
+      await userModel.withdrawUser(email);
+      res.json({ message: '회원탈퇴 성공' });
     } catch (err) {
       res.send(err);
     }
