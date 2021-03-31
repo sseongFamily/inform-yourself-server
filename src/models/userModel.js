@@ -121,7 +121,10 @@ const userModels = {
     try {
       const conn = await connect();
       const getCardSql = `
-        SELECT * FROM info_cards where email = ?;
+        SELECT info_cards_id as infoCardsId, email, title, description,
+        one_line_introduce as oneLineIntroduce, blog_url as blogUrl, 
+        repository_url as repositoryUrl, like_count as likeCount
+        FROM info_cards where email = ?;
       `;
       const getStackSql = `
       select i.interests_name from interests i
