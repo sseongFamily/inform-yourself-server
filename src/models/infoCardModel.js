@@ -71,7 +71,8 @@ const infoCardModel = {
     const conn = await connect();
     try {
       const infoCardDetailListSql = `
-      SELECT u.user_name, u.profile_image, info.one_line_introduce, info.title, info.description, info.blog_url, info.repository_url, info.like_count, info.created_at, GROUP_CONCAT(i.interests_name SEPARATOR ", ") AS stack FROM users AS u
+      SELECT info.info_cards_id AS infoCardId, u.user_name AS userName, u.profile_image AS profileImage, info.one_line_introduce AS oneLineIntroduce,
+      info.title AS title, info.description AS description, info.blog_url AS blogUrl, info.repository_url AS repositoryUrl, info.like_count AS likeCount, info.created_at, GROUP_CONCAT(i.interests_name SEPARATOR ", ") AS stack FROM users AS u
       INNER JOIN info_cards AS info
       ON u.email = info.email
       INNER JOIN user_and_interests AS uai
