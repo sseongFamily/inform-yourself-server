@@ -75,7 +75,7 @@ const userModels = {
       // TODO: newUser 정보에서 like_count 기준으로 정렬(stack추가 후 내보내기)
       // newUser 정보 가져오기
       const newUserInfoSql = `
-      SELECT u.email, u.user_name, u.profile_image, info.one_line_introduce, u.created_at,info.like_count
+      SELECT info.info_cards_id AS cardId, u.email, u.user_name AS userName, u.profile_image AS profileImage, info.one_line_introduce AS oneLineIntroduce, u.created_at,info.like_count
       FROM users AS u
       INNER JOIN info_cards AS info
       ON u.email = info.email
