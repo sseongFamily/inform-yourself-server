@@ -48,6 +48,7 @@ const userModels = {
         SELECT * FROM users where email = ? and password = ? and is_delete = 0;
       `;
       const loginReq = await conn.query(loginSql, [args.email, args.password]);
+
       if (loginReq[0].toString().length) {
         const { email, user_name, phone_number, profile_image, birthday } = JSON.parse(
           JSON.stringify(loginReq[0])
@@ -60,7 +61,7 @@ const userModels = {
           profileImage: profile_image,
           birthday,
         });
-        console.log(accessToken);
+
         return accessToken;
       }
       return false;
@@ -132,6 +133,7 @@ const userModels = {
       ON i.interests_code = ui.interests_code where ui.email = ?;
       `;
       const result = await conn.query(getCardSql + getStackSql, [email, email]);
+
       return result[0];
     } catch (err) {
       return err;

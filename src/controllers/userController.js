@@ -15,19 +15,21 @@ const userModule = {
           String(process.env.CRYPTO_ALGORITHM)
         )
         .toString('hex');
+
       const emailCheck = await userModel.findUser(email);
 
       if (!emailCheck) {
         return res.status(409).json({ message: '존재하지 않는 아이디 입니다.' });
       }
       const loginReq = await userModel.loginUser({ email: email, password: hasPw });
+
       if (!loginReq) {
         return res.status(409).json({ message: '비밀번호가 틀렸습니다.' });
       }
-      res.json({ message: '로그인 성공', accessToken: loginReq });
+      return res.json({ message: '로그인 성공', accessToken: loginReq });
     } catch (err) {
       console.log(err);
-      res.send(err);
+      return res.send(err);
     }
   },
 
@@ -62,8 +64,16 @@ const userModule = {
       delete userInfo.iat;
       delete userInfo.exp;
       const userCard = await userModel.userInfoCardandStack(userInfo.email);
+
+      //? 특정 유저의 카드가 없는 경우도 있다 !!
+      if (userCard[1].toString() === '') {
+        return res.json({ userInfo, userCard: [] });
+      }
+      console.log('@@@1번째', userCard);
       userCard[0][0].stack = [];
+      console.log('@@@2번째', userCard);
       userCard[1].map((el) => userCard[0][0].stack.push(el.interests_name));
+      console.log(userCard);
       res.json({
         userInfo,
         userCard: userCard[0],
