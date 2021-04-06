@@ -45,18 +45,19 @@ const infoCardModel = {
     const conn = await connect();
     try {
       const infoCardTotalListSql = `
-      SELECT u.user_name, u.profile_image, info.one_line_introduce, GROUP_CONCAT(i.interests_name SEPARATOR ", ") AS stact, info.created_at From users AS u
+      SELECT u.user_name as userName, u.profile_image as profileImage, info.one_line_introduce as oneLineIntroduce,
+      GROUP_CONCAT(i.interests_name SEPARATOR ", ") AS stack, info.created_at, info.info_cards_id as cardId From users AS u
       INNER JOIN info_cards AS info
       ON u.email = info.email
       INNER JOIN user_and_interests AS uai
       ON u.email = uai.email
       INNER JOIN interests AS i
       ON uai.interests_code = i.interests_code
-      GROUP BY u.user_name, u.profile_image, info.one_line_introduce, info.created_at
+      GROUP BY u.user_name, u.profile_image, info.one_line_introduce, info.created_at, info.info_cards_id
       ORDER BY info.created_at;
       `;
       const totalList = await conn.query(infoCardTotalListSql);
-
+      console.log(totalList[0]);
       for (let list of totalList[0]) {
         list.stack = list.stack.split(' ');
       }
