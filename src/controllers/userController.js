@@ -69,11 +69,8 @@ const userModule = {
       if (userCard[1].toString() === '') {
         return res.json({ userInfo, userCard: [] });
       }
-      console.log('@@@1번째', userCard);
       userCard[0][0].stack = [];
-      console.log('@@@2번째', userCard);
       userCard[1].map((el) => userCard[0][0].stack.push(el.interests_name));
-      console.log(userCard);
       res.json({
         userInfo,
         userCard: userCard[0],
