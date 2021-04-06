@@ -1,7 +1,7 @@
 const connect = require('../database');
 
 const infoCardModel = {
-  create: async (cardInfo) => {
+  create: async (info) => {
     try {
       // TODO : 카드에 정보 입력 해주기
       const conn = await connect();
@@ -12,27 +12,28 @@ const infoCardModel = {
       `;
 
       await conn.query(insertSql, [
-        cardInfo.email,
-        cardInfo.title,
-        cardInfo.oneLineIntroduce,
-        cardInfo.description,
-        cardInfo.blogUrl,
-        cardInfo.repositoryUrl,
+        info.email,
+        info.cardInfo.title,
+        info.cardInfo.oneLineIntroduce,
+        info.cardInfo.description,
+        info.cardInfo.blogUrl,
+        info.cardInfo.repositoryUrl,
       ]);
 
       await Promise.all(
-        cardInfo.stack.map(async (el) => {
+        info.cardInfo.stack.map(async (el) => {
           const getInterestCode = `SELECT interests_code from interests where lower(interests_name) = lower(?);`;
           const insertUserInt = `
             INSERT INTO user_and_interests(email, interests_code) values(?, ?);
           `;
           const result = await conn.query(getInterestCode, el);
+          console.log(result[0][0]);
           if (result[0][0] === undefined) {
             const insertSql = `INSERT INTO interests(interests_name) values (?);`;
             const result = await conn.query(insertSql, el);
-            return await conn.query(insertUserInt, [cardInfo.email, result[0].insertId]);
+            return await conn.query(insertUserInt, [info.email, result[0].insertId]);
           }
-          await conn.query(insertUserInt, [cardInfo.email, result[0][0].interests_code]);
+          await conn.query(insertUserInt, [info.email, result[0][0].interests_code]);
         })
       );
 
@@ -57,7 +58,6 @@ const infoCardModel = {
       ORDER BY info.created_at;
       `;
       const totalList = await conn.query(infoCardTotalListSql);
-      console.log(totalList[0]);
       for (let list of totalList[0]) {
         list.stack = list.stack.split(' ');
       }

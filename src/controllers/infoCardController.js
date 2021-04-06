@@ -7,6 +7,7 @@ const infoCardModule = {
     try {
       const { email } = tokenF.verifyAccessToken(accessToken);
       req.body.email = email;
+      console.log(req.body);
       await infoCardModel.create(req.body);
       return res.json({ message: '성공적으로 등록되었습니다.' });
     } catch (err) {
@@ -17,7 +18,6 @@ const infoCardModule = {
   totalList: async (req, res) => {
     try {
       const list = await infoCardModel.infoCardTotalList();
-      console.log(list);
       res.send(list);
     } catch (err) {
       console.log(err);
