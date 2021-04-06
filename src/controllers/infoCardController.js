@@ -17,6 +17,7 @@ const infoCardModule = {
   totalList: async (req, res) => {
     try {
       const list = await infoCardModel.infoCardTotalList();
+      console.log(list);
       res.send(list);
     } catch (err) {
       console.log(err);

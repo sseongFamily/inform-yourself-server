@@ -104,6 +104,7 @@ const userModels = {
               info.stack.push(stack.interests_name);
             }
           }
+          console.log(info);
           return info;
         });
       });
